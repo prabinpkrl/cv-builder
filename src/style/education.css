@@ -1,0 +1,33 @@
+
+.education-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+    margin-bottom: 20px;
+}
+
+.education-container h2 {
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
+.education-container label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.education-container input[type="text"],
+.education-container input[type="date"] {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}

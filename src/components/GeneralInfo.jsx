@@ -1,20 +1,34 @@
 /* eslint-disable react/prop-types */
+// import { useState } from "react";
+import "../style/general.css"
 
-const GeneralInfo = ({ onchange, data }) => {
+const GeneralInfo = ({ formData, setFormData }) => {
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        onchange('generalInfo', { ...data, [name]: value });
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     };
-    return (
-        <>
-            <div>
-                <h2>General Information</h2>
-                <input name="name" placeholder="Name" value={data.name} onChange={handleChange} />
-                <input name="email" placeholder="Email" value={data.email} onChange={handleChange} />
-                <input name="phone" placeholder="Phone" value={data.phone} onChange={handleChange} />
-            </div>
-        </>
-    )
-}
 
-export default GeneralInfo
+    return (
+        <div className="general-container">
+            <h1>CV Builder</h1>
+            <form>
+                <section>
+                    <h2>General Information</h2>
+                    <label>
+                        Name:
+                        <input type="text" name="name" onChange={handleChange} />
+                    </label>
+                    <label>
+                        Email:
+                        <input type="email" name="email" onChange={handleChange} />
+                    </label>
+                    <label>
+                        Phone:
+                        <input type="tel" name="phone" onChange={handleChange} />
+                    </label>
+                </section>
+            </form>
+        </div>
+    );
+};
+
+export default GeneralInfo;

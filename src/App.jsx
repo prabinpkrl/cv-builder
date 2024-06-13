@@ -1,94 +1,65 @@
 import { useState } from 'react';
+import EducationalExperience from "./components/educationExp"
+import GeneralInfo from "./components/GeneralInfo"
+import PracticalExperience from "./components/practicleExp"
 import './App.css';
 
 function App() {
-  const [generalInfo, setGeneralInfo] = useState({ name: '', email: '', phone: '' });
-  const [education, setEducation] = useState([{ school: '', title: '', date: '' }]);
+  const [formData, setFormData] = useState({});
+  const [educationData, setEducationData] = useState({});
+  const [practicleData, setPracticleData] = useState({});
   const [submitted, setSubmitted] = useState(false);
-
-  const handleGeneralChange = (e) => {
-    const { name, value } = e.target;
-    setGeneralInfo((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleEducationChange = (index, e) => {
-    const { name, value } = e.target;
-    const newEducation = education.map((edu, i) => (
-      i === index ? { ...edu, [name]: value } : edu
-    ));
-    setEducation(newEducation);
-  };
+  const [editing, setEditing] = useState(true)
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setSubmitted(true);
   };
 
+  const handleEdit =() =>{
+    setEditing(true)
+  }
   return (
     <div className="App">
-      <h1>CV Builder</h1>
-      <form onSubmit={handleSubmit}>
-        <section>
-          <h2>General Information</h2>
-          <label>
-            Name:
-            <input type="text" name="name" value={generalInfo.name} onChange={handleGeneralChange} />
-          </label>
-          <label>
-            Email:
-            <input type="email" name="email" value={generalInfo.email} onChange={handleGeneralChange} />
-          </label>
-          <label>
-            Phone:
-            <input type="tel" name="phone" value={generalInfo.phone} onChange={handleGeneralChange} />
-          </label>
-        </section>
-
-        <section>
-          <h2>Educational Experience</h2>
-          {education.map((edu, index) => (
-            <div key={index}>
-              <label>
-                School Name:
-                <input type="text" name="school" value={edu.school} onChange={(e) => handleEducationChange(index, e)} />
-              </label>
-              <label>
-                Title of Study:
-                <input type="text" name="title" value={edu.title} onChange={(e) => handleEducationChange(index, e)} />
-              </label>
-              <label>
-                Date of Study:
-                <input type="date" name="date" value={edu.date} onChange={(e) => handleEducationChange(index, e)} />
-              </label>
-            </div>
-          ))}
-          {/* <button type="button" onClick={handleAddEducation}>Add Education</button> */}
-        </section>
-
-        <button type="submit">Submit</button>
-      </form>
-
-      {submitted && (
-        <div>
-          <h2>Submitted Information</h2>
-          <section>
-            <h3>General Information</h3>
-            <p>Name: {generalInfo.name}</p>
-            <p>Email: {generalInfo.email}</p>
-            <p>Phone: {generalInfo.phone}</p>
-          </section>
-          <section>
-            <h3>Educational Experience</h3>
-            {education.map((edu, index) => (
-              <div key={index}>
-                <p>School: {edu.school}</p>
-                <p>Title: {edu.title}</p>
-                <p>Date: {edu.date}</p>
-              </div>
-            ))}
-          </section>
+      <div className='formbox'>
+        <GeneralInfo formData={formData} setFormData={setFormData} />
+        <EducationalExperience educationData={educationData} setEducationData={setEducationData} />
+        <PracticalExperience practicleData={practicleData} setPracticleData={setPracticleData} />
+        <div className="button-group">
+          <button onClick={handleEdit}>Edit</button>
+          <button onClick={handleSubmit}>Submit</button>
         </div>
-      )}
+      </div>
+    
+
+      <div className='submittedbox'>
+        {submitted && (
+          <div>
+            <h2>Submitted Information</h2>
+            <section>
+              <h3>General Information</h3>
+              <p>Name: {formData.name}</p>
+              <p>Email: {formData.email}</p>
+              <p>Phone: {formData.phone}</p>
+            </section>
+            <section>
+              <h3>Educational Experience</h3>
+              <p>School: {educationData.school}</p>
+              <p>Title: {educationData.title}</p>
+              <p>Date: {educationData.date}</p>
+            </section>
+
+            <section>
+              <h3>Practical Experience</h3>
+              <p>Company Name: {practicleData.companyName}</p>
+              <p>Position Title: {practicleData.positionTitle}</p>
+              <p>Main Responsibilities: {practicleData.mainResponsibilities}</p>
+              <p>Date From: {practicleData.dateFrom}</p>
+              <p>Date Until: {practicleData.dateUntil}</p>
+            </section>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -1,21 +1,42 @@
+/* eslint-disable react/prop-types */
+import "../style/practicle.css"
 
 
-const PracticalExperience = ({ onChange, data }) => {
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    onChange('practicalExperience', { ...data, [name]: value });
-  };
+const PracticalExperience = ({ practicleData, setPracticleData }) => {
+    const handleData = (e) => {
+        setPracticleData({ ...practicleData, [e.target.name]: e.target.value });
+    };
 
-  return (
-    <div>
-      <h2>Practical Experience</h2>
-      <input name="companyName" placeholder="Company Name" value={data.companyName} onChange={handleChange} />
-      <input name="positionTitle" placeholder="Position Title" value={data.positionTitle} onChange={handleChange} />
-      <input name="mainResponsibilities" placeholder="Main Responsibilities" value={data.mainResponsibilities} onChange={handleChange} />
-      <input name="dateFrom" placeholder="Date From" value={data.dateFrom} onChange={handleChange} />
-      <input name="dateUntil" placeholder="Date Until" value={data.dateUntil} onChange={handleChange} />
-    </div>
-  );
+    return (
+        <div className="practical-container">
+            <section>
+                <h2>Practical Experience</h2>
+                <label>
+                    Company Name:
+                    <input type="text" name="companyName" onChange={handleData} />
+                </label>
+                <label>
+                    Position Title:
+                    <input type="text" name="positionTitle" onChange={handleData} />
+                </label>
+                <label>
+                    Main Responsibilities:
+                    <input type="text" name="mainResponsibilities" onChange={handleData} />
+                </label>
+                <label>
+                    Date From:
+                    <input type="date" name="dateFrom" onChange={handleData} />
+                </label>
+                <label>
+                    Date Until:
+                    <input type="date" name="dateUntil" onChange={handleData} />
+                </label>
+            </section>
+        </div>
+    );
 };
 
 export default PracticalExperience;
+
+
+
