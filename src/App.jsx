@@ -50,6 +50,7 @@ function App() {
             </section>
 
             <section>
+              
               <h3>Practical Experience</h3>
               <p>Company Name: {practicleData.companyName}</p>
               <p>Position Title: {practicleData.positionTitle}</p>
