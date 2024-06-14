@@ -13,6 +13,10 @@
     font-family: Arial, sans-serif;
     color: #333;
 }
+.general-container h1{
+    text-align: center;
+    font-size: 40px;
+}
 
 .general-container label {
     display: block;

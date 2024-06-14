@@ -31,3 +31,7 @@
     border-radius: 4px;
     box-sizing: border-box;
 }
+textarea{
+    width: 600px;
+    height: 200px;
+}

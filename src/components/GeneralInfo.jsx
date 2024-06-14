@@ -18,6 +18,10 @@ const GeneralInfo = ({ formData, setFormData }) => {
                         <input type="text" name="name" onChange={handleChange} />
                     </label>
                     <label>
+                        Your Role:
+                        <input type="text" name="role" onChange={handleChange} />
+                    </label>
+                    <label>
                         Email:
                         <input type="email" name="email" onChange={handleChange} />
                     </label>

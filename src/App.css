@@ -22,35 +22,38 @@
 
 .submittedbox {
   margin-left: 10px;
+  background: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  border-left: 10px solid #4CAF50;
 }
 
-.button-group {
-  display: flex;
-  justify-content: space-between;
-}
-
-button {
+.edubox button, .practbox button, .button-group button {
   padding: 10px;
-  background-color: #4CAF50;
+  background-color: #20a325;
   color: white;
   border: none;
   border-radius: 4px;
-  font-size: 16px;
+  font-size: 24px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  width: 48%;
+  width: 100%;
 }
 
-button:hover {
-  background-color: #45a049;
+.practbox button{
+  margin-top: 10px;
+  background-color: #0d2b58;
 }
 
-button:first-child {
-  background-color: #f0ad4e;
+.button-group button{
+  margin-top: 10px;
+  background-color: #1961cc;
 }
-
-button:first-child:hover {
-  background-color: #ec971f;
+.practbox button:hover{
+  background-color: #20a325;
+}
+.edubox button:hover{
+  background-color: #0d2b58;
 }
 
 .submittedbox section {
@@ -63,3 +66,66 @@ button:first-child:hover {
   font-family: Arial, sans-serif;
   color: #555;
 }
+
+header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 2.5em;
+  color: #4CAF50;
+}
+
+header .subtitle {
+  font-size: 1.2em;
+  color: #555555;
+  margin: 5px 0;
+}
+
+header p {
+  margin: 5px 0;
+  color: #777777;
+}
+
+section {
+  margin-bottom: 20px;
+}
+
+section h2 {
+  border-bottom: 2px solid #4CAF50; /* Green */
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+    color: #333333;
+}
+
+.education-item, .experience-item {
+  margin-bottom: 20px;
+  background: #f9f9f9;
+  padding: 10px;
+  border-left: 5px solid #4CAF50; 
+  border-radius: 4px;
+}
+
+.education-item h3, .experience-item h3 {
+  margin: 0;
+  font-size: 1.3em;
+  color: #333;
+}
+
+.education-item p, .experience-item p {
+  margin: 5px 0;
+  color: #555;
+}
+
+.experience-item ul {
+  padding-left: 20px;
+  list-style-type: disc;
+  color: #555555;
+}
+
+.experience-item ul li {
+  margin-bottom: 5px;
+}
+
