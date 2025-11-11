@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 import EducationalExperience from "./components/educationExp";
 import GeneralInfo from "./components/GeneralInfo";
 import PracticalExperience from "./components/practicleExp";
@@ -7,6 +9,7 @@ import AchievementsSection from "./components/achievementsSection";
 import InterestsSection from "./components/interestsSection";
 
 function App() {
+  const cvRef = useRef();
   const [formData, setFormData] = useState({});
   const [educationData, setEducationData] = useState([{
     school: "",
@@ -56,6 +59,125 @@ function App() {
     setShowInterestsData(!showInterestsData);
   };
 
+  const downloadCV = async () => {
+    try {
+      const element = cvRef.current;
+      
+      // Create a clone to modify without affecting the original
+      const clone = element.cloneNode(true);
+      
+      // Function to replace problematic colors with standard ones
+      const fixColors = (el) => {
+        const style = window.getComputedStyle(el);
+        
+        // Force standard colors for common Tailwind classes
+        if (el.classList.contains('bg-gray-800')) {
+          el.style.backgroundColor = '#1f2937';
+        }
+        if (el.classList.contains('bg-gray-600')) {
+          el.style.backgroundColor = '#4b5563';
+        }
+        if (el.classList.contains('bg-white')) {
+          el.style.backgroundColor = '#ffffff';
+        }
+        if (el.classList.contains('text-white')) {
+          el.style.color = '#ffffff';
+        }
+        if (el.classList.contains('text-gray-800')) {
+          el.style.color = '#1f2937';
+        }
+        if (el.classList.contains('text-gray-700')) {
+          el.style.color = '#374151';
+        }
+        if (el.classList.contains('text-gray-600')) {
+          el.style.color = '#4b5563';
+        }
+        if (el.classList.contains('text-gray-500')) {
+          el.style.color = '#6b7280';
+        }
+        if (el.classList.contains('text-gray-300')) {
+          el.style.color = '#d1d5db';
+        }
+        
+        // Handle border colors
+        if (el.classList.contains('border-gray-300')) {
+          el.style.borderColor = '#d1d5db';
+        }
+        if (el.classList.contains('border-gray-200')) {
+          el.style.borderColor = '#e5e7eb';
+        }
+        
+        // Recursively fix children
+        Array.from(el.children).forEach(child => fixColors(child));
+      };
+      
+      // Apply color fixes to the clone
+      fixColors(clone);
+      
+      // Position clone off-screen
+      clone.style.position = 'absolute';
+      clone.style.left = '-9999px';
+      clone.style.top = '0';
+      clone.style.width = element.offsetWidth + 'px';
+      clone.style.height = element.offsetHeight + 'px';
+      
+      // Add clone to document temporarily
+      document.body.appendChild(clone);
+      
+      // Wait a moment for styles to apply
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      // Generate canvas from the fixed clone
+      const canvas = await html2canvas(clone, {
+        scale: 1.5,
+        useCORS: true,
+        backgroundColor: '#ffffff',
+        logging: false,
+        allowTaint: false,
+        foreignObjectRendering: false,
+        width: clone.offsetWidth,
+        height: clone.offsetHeight
+      });
+      
+      // Remove the clone
+      document.body.removeChild(clone);
+      
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      
+      // Calculate dimensions
+      const imgWidth = 210; // A4 width in mm
+      const pageHeight = 295; // A4 height in mm  
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+      let position = 0;
+      
+      // Add first page
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+      
+      // Add additional pages if needed
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+      
+      // Generate filename
+      const fileName = formData.name 
+        ? `${formData.name.replace(/\s+/g, '_')}_CV.pdf` 
+        : 'My_CV.pdf';
+      
+      // Download the PDF
+      pdf.save(fileName);
+      
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      alert('There was an error generating the PDF. This might be due to browser compatibility. Please try using Chrome or Firefox.');
+    }
+  };
+
   return (
     <div className="font-sans bg-red-50 p-5 flex justify-between gap-4 min-h-screen">
       <div className="w-1/2 border border-gray-300 p-5 rounded-lg bg-white shadow-lg">
@@ -64,9 +186,8 @@ function App() {
         <div className="mb-4">
           <button 
             onClick={handleEduChange}
-            className="w-full p-4 bg-blue-500 text-white border-none rounded-lg cursor-pointer text-base font-semibold hover:bg-blue-600 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center justify-center"
+            className="w-full p-4 bg-gray-600 text-white border-none rounded-lg cursor-pointer text-base font-semibold hover:bg-gray-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center justify-center"
           >
-            <span className="mr-2">🎓</span>
             {showEducationData ? "Hide" : "Add"} Educational Experience
           </button>
           {showEducationData && (
@@ -80,9 +201,8 @@ function App() {
         <div className="mb-4">
           <button 
             onClick={handlePracticleChange}
-            className="w-full p-4 bg-green-500 text-white border-none rounded-lg cursor-pointer text-base font-semibold hover:bg-green-600 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center justify-center"
+            className="w-full p-4 bg-gray-600 text-white border-none rounded-lg cursor-pointer text-base font-semibold hover:bg-gray-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center justify-center"
           >
-            <span className="mr-2">💼</span>
             {showPracticleData ? "Hide" : "Show"} Work Experience
           </button>
           {showPracticleData && (
@@ -96,9 +216,8 @@ function App() {
         <div className="mb-4">
           <button 
             onClick={handleSkillsChange}
-            className="w-full p-4 bg-purple-500 text-white border-none rounded-lg cursor-pointer text-base font-semibold hover:bg-purple-600 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center justify-center"
+            className="w-full p-4 bg-gray-600 text-white border-none rounded-lg cursor-pointer text-base font-semibold hover:bg-gray-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center justify-center"
           >
-            <span className="mr-2">⚡</span>
             {showSkillsData ? "Hide" : "Show"} Skills & Expertise
           </button>
           {showSkillsData && (
@@ -112,9 +231,8 @@ function App() {
         <div className="mb-4">
           <button 
             onClick={handleAchievementsChange}
-            className="w-full p-4 bg-yellow-500 text-white border-none rounded-lg cursor-pointer text-base font-semibold hover:bg-yellow-600 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center justify-center"
+            className="w-full p-4 bg-gray-600 text-white border-none rounded-lg cursor-pointer text-base font-semibold hover:bg-gray-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center justify-center"
           >
-            <span className="mr-2">🏆</span>
             {showAchievementsData ? "Hide" : "Show"} Achievements & Awards
           </button>
           {showAchievementsData && (
@@ -128,9 +246,8 @@ function App() {
         <div className="mb-4">
           <button 
             onClick={handleInterestsChange}
-            className="w-full p-4 bg-indigo-500 text-white border-none rounded-lg cursor-pointer text-base font-semibold hover:bg-indigo-600 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center justify-center"
+            className="w-full p-4 bg-gray-600 text-white border-none rounded-lg cursor-pointer text-base font-semibold hover:bg-gray-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center justify-center"
           >
-            <span className="mr-2">🎯</span>
             {showInterestsData ? "Hide" : "Show"} Interests & Hobbies
           </button>
           {showInterestsData && (
@@ -141,24 +258,32 @@ function App() {
           )}
         </div>
 
+        <div className="mb-4">
+          <button 
+            onClick={downloadCV}
+            className="w-full p-4 bg-green-600 text-white border-none rounded-lg cursor-pointer text-base font-semibold hover:bg-green-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center justify-center"
+          >
+            Download CV as PDF
+          </button>
+        </div>
+
       </div>
 
       <div className="w-1/2 bg-white shadow-2xl ml-2.5 rounded-lg overflow-hidden">
         {submitted && (
-          <div className="h-full">
-            <header className="bg-blue-600 text-white p-8 relative">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16"></div>
-              <div className="relative z-10">
-                <h1 className="text-4xl font-bold mb-2 tracking-wide">{formData.name || "Your Name"}</h1>
-                <p className="text-xl mb-4 text-blue-100 font-light">{formData.role || "Your Professional Role"}</p>
-                <div className="flex flex-col space-y-2 text-blue-100">
+          <div className="h-full" ref={cvRef}>
+            <header className="bg-gray-800 text-white p-8 text-center">
+              <div>
+                <h1 className="text-4xl font-bold mb-3 tracking-wide">{formData.name || "Your Name"}</h1>
+                <p className="text-xl mb-4 text-gray-300 font-light">{formData.role || "Your Professional Role"}</p>
+                <div className="flex justify-center space-x-8 text-gray-300">
                   <div className="flex items-center">
-                    <span className="w-5 h-5 mr-3">📧</span>
-                    <span>{formData.email || "your.email@example.com"}</span>
+                    <span className="font-medium">Email:</span>
+                    <span className="ml-2">{formData.email || "your.email@example.com"}</span>
                   </div>
                   <div className="flex items-center">
-                    <span className="w-5 h-5 mr-3">📱</span>
-                    <span>{formData.phone || "Your Phone Number"}</span>
+                    <span className="font-medium">Phone:</span>
+                    <span className="ml-2">{formData.phone || "Your Phone Number"}</span>
                   </div>
                 </div>
               </div>
@@ -166,95 +291,78 @@ function App() {
 
             <div className="p-8">
               <section className="mb-8">
-                <div className="flex items-center mb-6">
-                  <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mr-3">
-                    <span className="text-white text-sm">🎓</span>
-                  </div>
-                  <h2 className="text-2xl font-bold text-gray-800 tracking-wide">EDUCATION</h2>
+                <div className="mb-6">
+                  <h2 className="text-2xl font-bold text-gray-800 tracking-wide border-b-2 border-gray-300 pb-2">EDUCATION</h2>
                 </div>
                 {educationData.map((entry, index) => (
-                  <div className="mb-6 relative pl-8" key={index}>
-                    <div className="absolute left-0 top-2 w-3 h-3 bg-blue-500 rounded-full"></div>
-                    <div className="absolute left-1.5 top-5 w-0.5 h-full bg-blue-200"></div>
-                    <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
-                      <h3 className="text-lg font-bold text-gray-800 mb-1">{entry.school || "School Name"}</h3>
-                      <p className="text-blue-600 font-semibold mb-2">{entry.title || "Degree/Title"}</p>
+                  <div className="mb-4" key={index}>
+                    <div className="flex justify-between items-start mb-1">
+                      <h3 className="text-lg font-bold text-gray-800">{entry.school || "School Name"}</h3>
                       <p className="text-gray-500 text-sm font-medium">{entry.date || "Date"}</p>
                     </div>
+                    <p className="text-gray-700 font-medium">{entry.title || "Degree/Title"}</p>
                   </div>
                 ))}
               </section>
 
               <section className="mb-8">
-                <div className="flex items-center mb-6">
-                  <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mr-3">
-                    <span className="text-white text-sm">💼</span>
-                  </div>
-                  <h2 className="text-2xl font-bold text-gray-800 tracking-wide">EXPERIENCE</h2>
+                <div className="mb-6">
+                  <h2 className="text-2xl font-bold text-gray-800 tracking-wide border-b-2 border-gray-300 pb-2">EXPERIENCE</h2>
                 </div>
                 {practicleData.map((entry, index) => (
-                  <div className="mb-6 relative pl-8" key={index}>
-                    <div className="absolute left-0 top-2 w-3 h-3 bg-green-500 rounded-full"></div>
-                    <div className="absolute left-1.5 top-5 w-0.5 h-full bg-green-200"></div>
-                    <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
-                      <h3 className="text-lg font-bold text-gray-800 mb-1">{entry.companyName || "Company Name"}</h3>
-                      <p className="text-green-600 font-semibold mb-2">{entry.positionTitle || "Position Title"}</p>
-                      <p className="text-gray-500 text-sm font-medium mb-3">
+                  <div className="mb-6" key={index}>
+                    <div className="flex justify-between items-start mb-1">
+                      <h3 className="text-lg font-bold text-gray-800">{entry.companyName || "Company Name"}</h3>
+                      <p className="text-gray-500 text-sm font-medium">
                         {entry.dateFrom || "Start Date"} - {entry.dateUntil || "End Date"}
                       </p>
-                      <p className="text-gray-700 leading-relaxed">
-                        {entry.mainResponsibilities || "Your main responsibilities and achievements..."}
-                      </p>
                     </div>
+                    <p className="text-gray-700 font-semibold mb-2">{entry.positionTitle || "Position Title"}</p>
+                    <p className="text-gray-600 leading-relaxed">
+                      {entry.mainResponsibilities || "Your main responsibilities and achievements..."}
+                    </p>
                   </div>
                 ))}
               </section>
 
               <section className="mb-8">
-                <div className="flex items-center mb-6">
-                  <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center mr-3">
-                    <span className="text-white text-sm">⚡</span>
-                  </div>
-                  <h2 className="text-2xl font-bold text-gray-800 tracking-wide">SKILLS</h2>
+                <div className="mb-6">
+                  <h2 className="text-2xl font-bold text-gray-800 tracking-wide border-b-2 border-gray-300 pb-2">SKILLS</h2>
                 </div>
-                <div className="flex flex-wrap gap-3">
+                <div className="grid grid-cols-2 gap-2">
                   {skillsData.map((entry, index) => (
-                    <div className="bg-purple-100 text-purple-800 px-4 py-2 rounded-full text-sm font-medium" key={index}>
-                      {entry.skillName || "Skill Name"}
+                    <div className="text-gray-700 font-medium" key={index}>
+                      • {entry.skillName || "Skill Name"}
                     </div>
                   ))}
                 </div>
               </section>
 
               <section className="mb-8">
-                <div className="flex items-center mb-6">
-                  <div className="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center mr-3">
-                    <span className="text-white text-sm">🏆</span>
-                  </div>
-                  <h2 className="text-2xl font-bold text-gray-800 tracking-wide">ACHIEVEMENTS</h2>
+                <div className="mb-6">
+                  <h2 className="text-2xl font-bold text-gray-800 tracking-wide border-b-2 border-gray-300 pb-2">ACHIEVEMENTS</h2>
                 </div>
                 {achievementsData.map((entry, index) => (
-                  <div className="mb-4 bg-white border border-gray-200 rounded-lg p-4 shadow-sm" key={index}>
-                    <h3 className="text-lg font-bold text-gray-800 mb-1">{entry.title || "Achievement Title"}</h3>
-                    <p className="text-yellow-600 font-medium text-sm mb-2">{entry.date || "Date"}</p>
-                    <p className="text-gray-700 leading-relaxed">{entry.description || "Achievement description..."}</p>
+                  <div className="mb-4" key={index}>
+                    <div className="flex justify-between items-start mb-1">
+                      <h3 className="text-lg font-bold text-gray-800">{entry.title || "Achievement Title"}</h3>
+                      <p className="text-gray-500 text-sm font-medium">{entry.date || "Date"}</p>
+                    </div>
+                    <p className="text-gray-600 leading-relaxed">{entry.description || "Achievement description..."}</p>
                   </div>
                 ))}
               </section>
 
               <section className="mb-8">
-                <div className="flex items-center mb-6">
-                  <div className="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center mr-3">
-                    <span className="text-white text-sm">🎯</span>
-                  </div>
-                  <h2 className="text-2xl font-bold text-gray-800 tracking-wide">INTERESTS</h2>
+                <div className="mb-6">
+                  <h2 className="text-2xl font-bold text-gray-800 tracking-wide border-b-2 border-gray-300 pb-2">INTERESTS</h2>
                 </div>
-                <div className="flex flex-wrap gap-3">
+                <div className="grid grid-cols-2 gap-2">
                   {interestsData.map((entry, index) => (
-                    <div className="bg-indigo-100 text-indigo-800 px-4 py-2 rounded-full text-sm font-medium" key={index}>
-                      {entry.interest || "Interest"} 
+                    <div className="text-gray-700 font-medium" key={index}>
+                      • {entry.interest || "Interest"}
                       {entry.category && entry.category !== "Personal" && (
-                        <span className="text-indigo-600 ml-1">({entry.category})</span>
+                        <span className="text-gray-500 ml-1">({entry.category})</span>
                       )}
                     </div>
                   ))}

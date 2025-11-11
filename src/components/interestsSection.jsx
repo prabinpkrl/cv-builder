@@ -19,12 +19,9 @@ const InterestsSection = ({ interestsData, setInterestsData }) => {
 
     return (
         <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden mb-6">
-            <div className="bg-indigo-50 p-4 border-b border-gray-100">
-                <div className="flex items-center">
-                    <div className="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center mr-3">
-                        <span className="text-white text-sm">🎯</span>
-                    </div>
-                    <h2 className="text-xl font-bold text-gray-800">Interests & Hobbies</h2>
+            <div className="bg-gray-50 p-4 border-b border-gray-100">
+                <div className="mb-4">
+                    <h2 className="text-xl font-bold text-gray-800 border-b-2 border-gray-300 pb-2">Interests & Hobbies</h2>
                 </div>
             </div>
             <div className="p-6">
@@ -83,9 +80,8 @@ const InterestsSection = ({ interestsData, setInterestsData }) => {
                 ))}
                 <button 
                     onClick={addInterest}
-                    className="w-full p-4 bg-indigo-500 text-white border-none rounded-lg cursor-pointer text-base font-semibold hover:bg-indigo-600 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center justify-center"
+                    className="w-full p-4 bg-gray-600 text-white border-none rounded-lg cursor-pointer text-base font-semibold hover:bg-gray-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center justify-center"
                 >
-                    <span className="mr-2">➕</span>
                     Add Another Interest
                 </button>
             </div>

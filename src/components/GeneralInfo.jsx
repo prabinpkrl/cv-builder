@@ -60,11 +60,8 @@ const GeneralInfo = ({ formData, setFormData }) => {
                 <p className="text-gray-600 text-center text-sm">Create your professional resume</p>
             </div>
             <div className="p-6">
-                <div className="flex items-center mb-6">
-                    <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mr-3">
-                        <span className="text-white text-sm">👤</span>
-                    </div>
-                    <h2 className="text-xl font-bold text-gray-800">Personal Information</h2>
+                <div className="mb-6">
+                    <h2 className="text-xl font-bold text-gray-800 border-b-2 border-gray-300 pb-2">Personal Information</h2>
                 </div>
                 <form className="space-y-4">
                     <div className="group">
