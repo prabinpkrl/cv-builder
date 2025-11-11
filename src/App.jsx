@@ -2,6 +2,9 @@ import { useState } from "react";
 import EducationalExperience from "./components/educationExp";
 import GeneralInfo from "./components/GeneralInfo";
 import PracticalExperience from "./components/practicleExp";
+import SkillsSection from "./components/skillsSection";
+import AchievementsSection from "./components/achievementsSection";
+import InterestsSection from "./components/interestsSection";
 
 function App() {
   const [formData, setFormData] = useState({});
@@ -18,7 +21,13 @@ function App() {
     dateFrom: "",
     dateUntil: "",
   }]);
-  const [showPracticleData, setShowPracticleData] = useState(false)
+  const [showPracticleData, setShowPracticleData] = useState(false);
+  const [skillsData, setSkillsData] = useState([{ skillName: "" }]);
+  const [showSkillsData, setShowSkillsData] = useState(false);
+  const [achievementsData, setAchievementsData] = useState([{ title: "", description: "", date: "" }]);
+  const [showAchievementsData, setShowAchievementsData] = useState(false);
+  const [interestsData, setInterestsData] = useState([{ interest: "", category: "Personal" }]);
+  const [showInterestsData, setShowInterestsData] = useState(false);
   const [submitted, setSubmitted] = useState(true); // Always show preview
   // const [editing, setEditing] = useState(true)
 
@@ -36,6 +45,15 @@ function App() {
   };
   const handlePracticleChange = () => {
     setShowPracticleData(!showPracticleData);
+  };
+  const handleSkillsChange = () => {
+    setShowSkillsData(!showSkillsData);
+  };
+  const handleAchievementsChange = () => {
+    setShowAchievementsData(!showAchievementsData);
+  };
+  const handleInterestsChange = () => {
+    setShowInterestsData(!showInterestsData);
   };
 
   return (
@@ -71,6 +89,54 @@ function App() {
             <PracticalExperience
               practicleData={practicleData}
               setPracticleData={setPracticleData}
+            />
+          )}
+        </div>
+
+        <div className="mb-4">
+          <button 
+            onClick={handleSkillsChange}
+            className="w-full p-4 bg-purple-500 text-white border-none rounded-lg cursor-pointer text-base font-semibold hover:bg-purple-600 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center justify-center"
+          >
+            <span className="mr-2">⚡</span>
+            {showSkillsData ? "Hide" : "Show"} Skills & Expertise
+          </button>
+          {showSkillsData && (
+            <SkillsSection
+              skillsData={skillsData}
+              setSkillsData={setSkillsData}
+            />
+          )}
+        </div>
+
+        <div className="mb-4">
+          <button 
+            onClick={handleAchievementsChange}
+            className="w-full p-4 bg-yellow-500 text-white border-none rounded-lg cursor-pointer text-base font-semibold hover:bg-yellow-600 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center justify-center"
+          >
+            <span className="mr-2">🏆</span>
+            {showAchievementsData ? "Hide" : "Show"} Achievements & Awards
+          </button>
+          {showAchievementsData && (
+            <AchievementsSection
+              achievementsData={achievementsData}
+              setAchievementsData={setAchievementsData}
+            />
+          )}
+        </div>
+
+        <div className="mb-4">
+          <button 
+            onClick={handleInterestsChange}
+            className="w-full p-4 bg-indigo-500 text-white border-none rounded-lg cursor-pointer text-base font-semibold hover:bg-indigo-600 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center justify-center"
+          >
+            <span className="mr-2">🎯</span>
+            {showInterestsData ? "Hide" : "Show"} Interests & Hobbies
+          </button>
+          {showInterestsData && (
+            <InterestsSection
+              interestsData={interestsData}
+              setInterestsData={setInterestsData}
             />
           )}
         </div>
@@ -142,6 +208,57 @@ function App() {
                     </div>
                   </div>
                 ))}
+              </section>
+
+              <section className="mb-8">
+                <div className="flex items-center mb-6">
+                  <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center mr-3">
+                    <span className="text-white text-sm">⚡</span>
+                  </div>
+                  <h2 className="text-2xl font-bold text-gray-800 tracking-wide">SKILLS</h2>
+                </div>
+                <div className="flex flex-wrap gap-3">
+                  {skillsData.map((entry, index) => (
+                    <div className="bg-purple-100 text-purple-800 px-4 py-2 rounded-full text-sm font-medium" key={index}>
+                      {entry.skillName || "Skill Name"}
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section className="mb-8">
+                <div className="flex items-center mb-6">
+                  <div className="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center mr-3">
+                    <span className="text-white text-sm">🏆</span>
+                  </div>
+                  <h2 className="text-2xl font-bold text-gray-800 tracking-wide">ACHIEVEMENTS</h2>
+                </div>
+                {achievementsData.map((entry, index) => (
+                  <div className="mb-4 bg-white border border-gray-200 rounded-lg p-4 shadow-sm" key={index}>
+                    <h3 className="text-lg font-bold text-gray-800 mb-1">{entry.title || "Achievement Title"}</h3>
+                    <p className="text-yellow-600 font-medium text-sm mb-2">{entry.date || "Date"}</p>
+                    <p className="text-gray-700 leading-relaxed">{entry.description || "Achievement description..."}</p>
+                  </div>
+                ))}
+              </section>
+
+              <section className="mb-8">
+                <div className="flex items-center mb-6">
+                  <div className="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center mr-3">
+                    <span className="text-white text-sm">🎯</span>
+                  </div>
+                  <h2 className="text-2xl font-bold text-gray-800 tracking-wide">INTERESTS</h2>
+                </div>
+                <div className="flex flex-wrap gap-3">
+                  {interestsData.map((entry, index) => (
+                    <div className="bg-indigo-100 text-indigo-800 px-4 py-2 rounded-full text-sm font-medium" key={index}>
+                      {entry.interest || "Interest"} 
+                      {entry.category && entry.category !== "Personal" && (
+                        <span className="text-indigo-600 ml-1">({entry.category})</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </section>
             </div>
           </div>
