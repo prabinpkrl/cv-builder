@@ -19,12 +19,12 @@ function App() {
     dateUntil: "",
   }]);
   const [showPracticleData, setShowPracticleData] = useState(false)
-  const [submitted, setSubmitted] = useState(false);
+  const [submitted, setSubmitted] = useState(true); // Always show preview
   // const [editing, setEditing] = useState(true)
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setSubmitted(true);
+    // Remove the submit functionality since it's now real-time
   };
 
   // const handleEdit = () => {
@@ -46,9 +46,10 @@ function App() {
         <div className="mb-4">
           <button 
             onClick={handleEduChange}
-            className="w-full p-2.5 bg-green-600 text-white border-none rounded cursor-pointer text-lg hover:bg-blue-800 transition-colors duration-300"
+            className="w-full p-4 bg-blue-500 text-white border-none rounded-lg cursor-pointer text-base font-semibold hover:bg-blue-600 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center justify-center"
           >
-            {showEducationData ? "Hide" : "Add"} Educational
+            <span className="mr-2">🎓</span>
+            {showEducationData ? "Hide" : "Add"} Educational Experience
           </button>
           {showEducationData && (
             <EducationalExperience
@@ -61,9 +62,10 @@ function App() {
         <div className="mb-4">
           <button 
             onClick={handlePracticleChange}
-            className="w-full p-2.5 bg-blue-800 text-white border-none rounded cursor-pointer text-lg hover:bg-green-600 transition-colors duration-300 mt-2.5"
+            className="w-full p-4 bg-green-500 text-white border-none rounded-lg cursor-pointer text-base font-semibold hover:bg-green-600 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center justify-center"
           >
-            {showPracticleData ? "Hide" : "Show"} Practical
+            <span className="mr-2">💼</span>
+            {showPracticleData ? "Hide" : "Show"} Work Experience
           </button>
           {showPracticleData && (
             <PracticalExperience
@@ -73,52 +75,75 @@ function App() {
           )}
         </div>
 
-        <div className="mb-4">
-          <button 
-            onClick={handleSubmit}
-            className="w-full p-2.5 bg-blue-600 text-white border-none rounded cursor-pointer text-lg hover:bg-blue-700 transition-colors duration-300 mt-2.5"
-          >
-            Submit
-          </button>
-        </div>
       </div>
 
-      <div className="w-1/2 border border-gray-300 p-5 rounded-lg bg-white shadow-lg ml-2.5 border-l-8 border-l-green-500">
+      <div className="w-1/2 bg-white shadow-2xl ml-2.5 rounded-lg overflow-hidden">
         {submitted && (
-          <div>
-            <header className="mb-6">
-              <h1 className="text-3xl font-bold text-gray-800 mb-2">{formData.name}</h1>
-              <p className="text-xl text-gray-600 mb-2 font-medium">{formData.role}</p>
-              <p className="text-gray-700 mb-1">{formData.email}</p>
-              <p className="text-gray-700">{formData.phone}</p>
+          <div className="h-full">
+            <header className="bg-blue-600 text-white p-8 relative">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16"></div>
+              <div className="relative z-10">
+                <h1 className="text-4xl font-bold mb-2 tracking-wide">{formData.name || "Your Name"}</h1>
+                <p className="text-xl mb-4 text-blue-100 font-light">{formData.role || "Your Professional Role"}</p>
+                <div className="flex flex-col space-y-2 text-blue-100">
+                  <div className="flex items-center">
+                    <span className="w-5 h-5 mr-3">📧</span>
+                    <span>{formData.email || "your.email@example.com"}</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="w-5 h-5 mr-3">📱</span>
+                    <span>{formData.phone || "Your Phone Number"}</span>
+                  </div>
+                </div>
+              </div>
             </header>
 
-            <section className="mb-6">
-              <h2 className="text-2xl font-semibold text-gray-800 mb-4 border-b-2 border-gray-300 pb-2">Educational</h2>
-              {educationData.map((entry, index) => (
-                <div className="mb-4 p-3 bg-gray-50 rounded border-l-4 border-l-blue-500" key={index}>
-                  <h3 className="text-lg font-semibold text-gray-800">{entry.school}</h3>
-                  <p className="text-gray-700 font-medium">{entry.title}</p>
-                  <p className="text-gray-600 text-sm">{entry.date}</p>
+            <div className="p-8">
+              <section className="mb-8">
+                <div className="flex items-center mb-6">
+                  <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mr-3">
+                    <span className="text-white text-sm">🎓</span>
+                  </div>
+                  <h2 className="text-2xl font-bold text-gray-800 tracking-wide">EDUCATION</h2>
                 </div>
-              ))}
-            </section>
+                {educationData.map((entry, index) => (
+                  <div className="mb-6 relative pl-8" key={index}>
+                    <div className="absolute left-0 top-2 w-3 h-3 bg-blue-500 rounded-full"></div>
+                    <div className="absolute left-1.5 top-5 w-0.5 h-full bg-blue-200"></div>
+                    <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
+                      <h3 className="text-lg font-bold text-gray-800 mb-1">{entry.school || "School Name"}</h3>
+                      <p className="text-blue-600 font-semibold mb-2">{entry.title || "Degree/Title"}</p>
+                      <p className="text-gray-500 text-sm font-medium">{entry.date || "Date"}</p>
+                    </div>
+                  </div>
+                ))}
+              </section>
 
-            <section className="mb-6">
-              <h2 className="text-2xl font-semibold text-gray-800 mb-4 border-b-2 border-gray-300 pb-2">Practical Experience</h2>
-              {practicleData.map((entry, index) => (
-                <div className="mb-4 p-3 bg-gray-50 rounded border-l-4 border-l-green-500" key={index}>
-                  <h3 className="text-lg font-semibold text-gray-800">{entry.companyName}</h3>
-                  <p className="text-gray-700 font-medium">Position: {entry.positionTitle}</p>
-                  <p className="text-gray-600 text-sm">
-                    Date From: {entry.dateFrom} - Date Until: {entry.dateUntil}
-                  </p>
-                  <p className="text-gray-700 mt-2">
-                    <span className="font-medium">Main Responsibilities:</span> {entry.mainResponsibilities}
-                  </p>
+              <section className="mb-8">
+                <div className="flex items-center mb-6">
+                  <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mr-3">
+                    <span className="text-white text-sm">💼</span>
+                  </div>
+                  <h2 className="text-2xl font-bold text-gray-800 tracking-wide">EXPERIENCE</h2>
                 </div>
-              ))}
-            </section>
+                {practicleData.map((entry, index) => (
+                  <div className="mb-6 relative pl-8" key={index}>
+                    <div className="absolute left-0 top-2 w-3 h-3 bg-green-500 rounded-full"></div>
+                    <div className="absolute left-1.5 top-5 w-0.5 h-full bg-green-200"></div>
+                    <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
+                      <h3 className="text-lg font-bold text-gray-800 mb-1">{entry.companyName || "Company Name"}</h3>
+                      <p className="text-green-600 font-semibold mb-2">{entry.positionTitle || "Position Title"}</p>
+                      <p className="text-gray-500 text-sm font-medium mb-3">
+                        {entry.dateFrom || "Start Date"} - {entry.dateUntil || "End Date"}
+                      </p>
+                      <p className="text-gray-700 leading-relaxed">
+                        {entry.mainResponsibilities || "Your main responsibilities and achievements..."}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </section>
+            </div>
           </div>
         )}
       </div>

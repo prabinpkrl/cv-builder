@@ -7,49 +7,69 @@ const GeneralInfo = ({ formData, setFormData }) => {
     };
 
     return (
-        <div className="max-w-2xl mx-auto p-5 border border-gray-300 rounded-lg shadow-lg bg-gray-50">
-            <h1 className="text-center text-4xl font-sans text-gray-800 mb-6">CV Builder</h1>
-            <form className="flex flex-col">
-                <section>
-                    <h2 className="font-sans text-gray-800 text-xl mb-4">General Information</h2>
-                    <label className="block mb-2.5 font-bold">
-                        Name:
+        <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden mb-6">
+            <div className="bg-blue-50 p-6 border-b border-gray-100">
+                <h1 className="text-3xl font-bold text-gray-800 text-center mb-2">CV Builder</h1>
+                <p className="text-gray-600 text-center text-sm">Create your professional resume</p>
+            </div>
+            <div className="p-6">
+                <div className="flex items-center mb-6">
+                    <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mr-3">
+                        <span className="text-white text-sm">👤</span>
+                    </div>
+                    <h2 className="text-xl font-bold text-gray-800">Personal Information</h2>
+                </div>
+                <form className="space-y-4">
+                    <div className="group">
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">
+                            Full Name
+                        </label>
                         <input 
                             type="text" 
                             name="name" 
                             onChange={handleChange}
-                            className="w-full p-2 mt-1 mb-4 border border-gray-300 rounded box-border"
+                            placeholder="Enter your full name"
+                            className="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none transition-colors duration-200 bg-gray-50 focus:bg-white"
                         />
-                    </label>
-                    <label className="block mb-2.5 font-bold">
-                        Your Role:
+                    </div>
+                    <div className="group">
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">
+                            Professional Role
+                        </label>
                         <input 
                             type="text" 
                             name="role" 
                             onChange={handleChange}
-                            className="w-full p-2 mt-1 mb-4 border border-gray-300 rounded box-border"
+                            placeholder="e.g., Software Developer, Marketing Manager"
+                            className="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none transition-colors duration-200 bg-gray-50 focus:bg-white"
                         />
-                    </label>
-                    <label className="block mb-2.5 font-bold">
-                        Email:
+                    </div>
+                    <div className="group">
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">
+                            Email Address
+                        </label>
                         <input 
                             type="email" 
                             name="email" 
                             onChange={handleChange}
-                            className="w-full p-2 mt-1 mb-4 border border-gray-300 rounded box-border"
+                            placeholder="your.email@example.com"
+                            className="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none transition-colors duration-200 bg-gray-50 focus:bg-white"
                         />
-                    </label>
-                    <label className="block mb-2.5 font-bold">
-                        Phone:
+                    </div>
+                    <div className="group">
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">
+                            Phone Number
+                        </label>
                         <input 
                             type="tel" 
                             name="phone" 
                             onChange={handleChange}
-                            className="w-full p-2 mt-1 mb-4 border border-gray-300 rounded box-border"
+                            placeholder="+977 980000000"
+                            className="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none transition-colors duration-200 bg-gray-50 focus:bg-white"
                         />
-                    </label>
-                </section>
-            </form>
+                    </div>
+                </form>
+            </div>
         </div>
     );
 };

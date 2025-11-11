@@ -19,70 +19,101 @@ const PracticalExperience = ({ practicleData, setPracticleData }) => {
     }
 
     return (
-        <div className="max-w-2xl mx-auto p-5 border border-gray-300 rounded-lg shadow-lg bg-gray-50 mb-5">
-            <section>
-                <h2 className="font-sans text-gray-800 text-xl mb-4">Practical Experience</h2>
+        <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden mb-6">
+            <div className="bg-green-50 p-4 border-b border-gray-100">
+                <div className="flex items-center">
+                    <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mr-3">
+                        <span className="text-white text-sm">💼</span>
+                    </div>
+                    <h2 className="text-xl font-bold text-gray-800">Work Experience</h2>
+                </div>
+            </div>
+            <div className="p-6">
                 {practicleData.map((entry, index) => (
-                    <div key={index} className="mb-4 p-4 border border-gray-200 rounded-lg bg-white">
-                        <label className="block mb-2.5 font-bold">
-                            Company Name:
-                            <input 
-                                type="text" 
-                                name="companyName" 
-                                value={entry.companyName} 
-                                onChange={(e) => handleData(index, e)}
-                                className="w-full p-2 mt-1 mb-4 border border-gray-300 rounded box-border"
-                            />
-                        </label>
-                        <label className="block mb-2.5 font-bold">
-                            Position Title:
-                            <input 
-                                type="text" 
-                                name="positionTitle" 
-                                value={entry.positionTitle} 
-                                onChange={(e) => handleData(index, e)}
-                                className="w-full p-2 mt-1 mb-4 border border-gray-300 rounded box-border"
-                            />
-                        </label>
-                        <label className="block mb-2.5 font-bold">
-                            Date From:
-                            <input 
-                                type="date" 
-                                name="dateFrom" 
-                                value={entry.dateFrom} 
-                                onChange={(e) => handleData(index, e)}
-                                className="w-full p-2 mt-1 mb-4 border border-gray-300 rounded box-border"
-                            />
-                        </label>
-                        <label className="block mb-2.5 font-bold">
-                            Date Until:
-                            <input 
-                                type="date" 
-                                name="dateUntil" 
-                                value={entry.dateUntil} 
-                                onChange={(e) => handleData(index, e)}
-                                className="w-full p-2 mt-1 mb-4 border border-gray-300 rounded box-border"
-                            />
-                        </label>
-                        <label className="block mb-2.5 font-bold">
-                            Main Responsibilities:
-                            <textarea 
-                                name="mainResponsibilities" 
-                                placeholder="Write Your responsibilities"
-                                value={entry.mainResponsibilities} 
-                                onChange={(e) => handleData(index, e)}
-                                className="w-full p-2 mt-1 mb-4 border border-gray-300 rounded box-border h-32 resize-y"
-                            />
-                        </label>
+                    <div key={index} className="mb-6 p-5 bg-gray-50 rounded-xl border border-gray-200 hover:shadow-md transition-shadow duration-200">
+                        <div className="flex items-center mb-4">
+                            <div className="w-6 h-6 bg-green-400 rounded-full flex items-center justify-center mr-2">
+                                <span className="text-white text-xs font-bold">{index + 1}</span>
+                            </div>
+                            <h3 className="text-lg font-semibold text-gray-700">Experience Entry {index + 1}</h3>
+                        </div>
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                    Company Name
+                                </label>
+                                <input 
+                                    type="text" 
+                                    name="companyName" 
+                                    value={entry.companyName} 
+                                    onChange={(e) => handleData(index, e)}
+                                    placeholder="e.g., Google, Microsoft, Apple"
+                                    className="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-green-500 focus:outline-none transition-colors duration-200 bg-white"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                    Job Title/Position
+                                </label>
+                                <input 
+                                    type="text" 
+                                    name="positionTitle" 
+                                    value={entry.positionTitle} 
+                                    onChange={(e) => handleData(index, e)}
+                                    placeholder="e.g., Senior Software Engineer, Product Manager"
+                                    className="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-green-500 focus:outline-none transition-colors duration-200 bg-white"
+                                />
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                        Start Date
+                                    </label>
+                                    <input 
+                                        type="date" 
+                                        name="dateFrom" 
+                                        value={entry.dateFrom} 
+                                        onChange={(e) => handleData(index, e)}
+                                        className="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-green-500 focus:outline-none transition-colors duration-200 bg-white"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                        End Date
+                                    </label>
+                                    <input 
+                                        type="date" 
+                                        name="dateUntil" 
+                                        value={entry.dateUntil} 
+                                        onChange={(e) => handleData(index, e)}
+                                        className="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-green-500 focus:outline-none transition-colors duration-200 bg-white"
+                                    />
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                    Key Responsibilities & Achievements
+                                </label>
+                                <textarea 
+                                    name="mainResponsibilities" 
+                                    placeholder="Describe your main responsibilities, achievements, and impact in this role..."
+                                    value={entry.mainResponsibilities} 
+                                    onChange={(e) => handleData(index, e)}
+                                    rows="4"
+                                    className="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-green-500 focus:outline-none transition-colors duration-200 bg-white resize-y"
+                                />
+                            </div>
+                        </div>
                     </div>
                 ))}
                 <button 
                     onClick={addPracticelExp}
-                    className="w-full p-2.5 bg-blue-800 text-white border-none rounded cursor-pointer text-lg hover:bg-green-600 transition-colors duration-300"
+                    className="w-full p-4 bg-green-500 text-white border-none rounded-lg cursor-pointer text-base font-semibold hover:bg-green-600 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center justify-center"
                 >
-                    Add More
+                    <span className="mr-2">➕</span>
+                    Add Another Work Experience
                 </button>
-            </section>
+            </div>
         </div>
     );
 };
