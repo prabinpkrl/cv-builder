@@ -1,3 +1,7 @@
-:root{
-    background-color: #414141;
+@import "tailwindcss";
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa;
 }
