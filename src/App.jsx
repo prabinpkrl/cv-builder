@@ -1,12 +1,12 @@
 import { useState, useRef } from "react";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
+import { pdf } from "@react-pdf/renderer";
 import EducationalExperience from "./components/educationExp";
 import GeneralInfo from "./components/GeneralInfo";
 import PracticalExperience from "./components/practicleExp";
 import SkillsSection from "./components/skillsSection";
 import AchievementsSection from "./components/achievementsSection";
 import InterestsSection from "./components/interestsSection";
+import CVPDFDocument from "./components/CVPDFDocument";
 
 function App() {
   const cvRef = useRef();
@@ -61,120 +61,39 @@ function App() {
 
   const downloadCV = async () => {
     try {
-      const element = cvRef.current;
+      // Create PDF document using react-pdf
+      const doc = (
+        <CVPDFDocument 
+          formData={formData}
+          educationData={educationData}
+          practicleData={practicleData}
+          skillsData={skillsData}
+          achievementsData={achievementsData}
+          interestsData={interestsData}
+        />
+      );
       
-      // Create a clone to modify without affecting the original
-      const clone = element.cloneNode(true);
-      
-      // Function to replace problematic colors with standard ones
-      const fixColors = (el) => {
-        const style = window.getComputedStyle(el);
-        
-        // Force standard colors for common Tailwind classes
-        if (el.classList.contains('bg-gray-800')) {
-          el.style.backgroundColor = '#1f2937';
-        }
-        if (el.classList.contains('bg-gray-600')) {
-          el.style.backgroundColor = '#4b5563';
-        }
-        if (el.classList.contains('bg-white')) {
-          el.style.backgroundColor = '#ffffff';
-        }
-        if (el.classList.contains('text-white')) {
-          el.style.color = '#ffffff';
-        }
-        if (el.classList.contains('text-gray-800')) {
-          el.style.color = '#1f2937';
-        }
-        if (el.classList.contains('text-gray-700')) {
-          el.style.color = '#374151';
-        }
-        if (el.classList.contains('text-gray-600')) {
-          el.style.color = '#4b5563';
-        }
-        if (el.classList.contains('text-gray-500')) {
-          el.style.color = '#6b7280';
-        }
-        if (el.classList.contains('text-gray-300')) {
-          el.style.color = '#d1d5db';
-        }
-        
-        // Handle border colors
-        if (el.classList.contains('border-gray-300')) {
-          el.style.borderColor = '#d1d5db';
-        }
-        if (el.classList.contains('border-gray-200')) {
-          el.style.borderColor = '#e5e7eb';
-        }
-        
-        // Recursively fix children
-        Array.from(el.children).forEach(child => fixColors(child));
-      };
-      
-      // Apply color fixes to the clone
-      fixColors(clone);
-      
-      // Position clone off-screen
-      clone.style.position = 'absolute';
-      clone.style.left = '-9999px';
-      clone.style.top = '0';
-      clone.style.width = element.offsetWidth + 'px';
-      clone.style.height = element.offsetHeight + 'px';
-      
-      // Add clone to document temporarily
-      document.body.appendChild(clone);
-      
-      // Wait a moment for styles to apply
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
-      // Generate canvas from the fixed clone
-      const canvas = await html2canvas(clone, {
-        scale: 1.5,
-        useCORS: true,
-        backgroundColor: '#ffffff',
-        logging: false,
-        allowTaint: false,
-        foreignObjectRendering: false,
-        width: clone.offsetWidth,
-        height: clone.offsetHeight
-      });
-      
-      // Remove the clone
-      document.body.removeChild(clone);
-      
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      
-      // Calculate dimensions
-      const imgWidth = 210; // A4 width in mm
-      const pageHeight = 295; // A4 height in mm  
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      let heightLeft = imgHeight;
-      let position = 0;
-      
-      // Add first page
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-      
-      // Add additional pages if needed
-      while (heightLeft >= 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-      }
+      // Generate PDF blob
+      const blob = await pdf(doc).toBlob();
       
       // Generate filename
       const fileName = formData.name 
         ? `${formData.name.replace(/\s+/g, '_')}_CV.pdf` 
         : 'My_CV.pdf';
       
-      // Download the PDF
-      pdf.save(fileName);
+      // Create download link and trigger download
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
       
     } catch (error) {
       console.error('Error generating PDF:', error);
-      alert('There was an error generating the PDF. This might be due to browser compatibility. Please try using Chrome or Firefox.');
+      alert('There was an error generating the PDF. Please try again.');
     }
   };
 
