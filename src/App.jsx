@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { pdf } from "@react-pdf/renderer";
 import EducationalExperience from "./components/educationExp";
 import GeneralInfo from "./components/GeneralInfo";
@@ -32,7 +32,15 @@ function App() {
   const [interestsData, setInterestsData] = useState([{ interest: "", category: "Personal" }]);
   const [showInterestsData, setShowInterestsData] = useState(false);
   const [submitted, setSubmitted] = useState(true); // Always show preview
+  const [validationErrors, setValidationErrors] = useState([]);
+  const [isFormValid, setIsFormValid] = useState(false);
   // const [editing, setEditing] = useState(true)
+
+  // Update validation in real-time when form data changes
+  useEffect(() => {
+    const isValid = validateRequiredFields();
+    setIsFormValid(isValid);
+  }, [formData, educationData, skillsData]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -59,7 +67,51 @@ function App() {
     setShowInterestsData(!showInterestsData);
   };
 
+  // Validation function for required fields
+  const validateRequiredFields = () => {
+    const errors = [];
+    
+    // Check required general info fields
+    if (!formData.name || formData.name.trim() === '') {
+      errors.push('Name is required');
+    }
+    if (!formData.email || formData.email.trim() === '') {
+      errors.push('Email is required');
+    }
+    if (!formData.phone || formData.phone.trim() === '') {
+      errors.push('Phone number is required');
+    }
+    if (!formData.role || formData.role.trim() === '') {
+      errors.push('Professional role is required');
+    }
+    
+    // Check if at least one education entry is filled
+    const hasEducation = educationData.some(entry => 
+      entry.school && entry.school.trim() !== '' && 
+      entry.title && entry.title.trim() !== ''
+    );
+    if (!hasEducation) {
+      errors.push('At least one education entry is required');
+    }
+    
+    // Check if at least one skill is filled
+    const hasSkills = skillsData.some(entry => 
+      entry.skillName && entry.skillName.trim() !== ''
+    );
+    if (!hasSkills) {
+      errors.push('At least one skill is required');
+    }
+    
+    setValidationErrors(errors);
+    return errors.length === 0;
+  };
+
   const downloadCV = async () => {
+    // Check if form is valid before downloading
+    if (!isFormValid) {
+      alert('Please fill in all required fields:\n\n' + validationErrors.join('\n'));
+      return;
+    }
     try {
       // Create PDF document using react-pdf
       const doc = (
@@ -180,10 +232,29 @@ function App() {
         <div className="mb-4">
           <button 
             onClick={downloadCV}
-            className="w-full p-4 bg-green-600 text-white border-none rounded-lg cursor-pointer text-base font-semibold hover:bg-green-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center justify-center"
+            className={`w-full p-4 border-none rounded-lg cursor-pointer text-base font-semibold transition-all duration-300 shadow-md flex items-center justify-center ${
+              isFormValid 
+                ? 'bg-green-600 text-white hover:bg-green-700 hover:shadow-lg transform hover:-translate-y-0.5' 
+                : 'bg-gray-400 text-gray-200 cursor-not-allowed'
+            }`}
+            disabled={!isFormValid}
           >
-            Download CV as PDF
+            {isFormValid ? 'Download CV as PDF' : 'Complete Required Fields to Download'}
           </button>
+          
+          {validationErrors.length > 0 && (
+            <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <h4 className="text-sm font-semibold text-red-800 mb-2">Required Fields Missing:</h4>
+              <ul className="text-sm text-red-700 space-y-1">
+                {validationErrors.map((error, index) => (
+                  <li key={index} className="flex items-center">
+                    <span className="w-1.5 h-1.5 bg-red-500 rounded-full mr-2"></span>
+                    {error}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
 
       </div>
