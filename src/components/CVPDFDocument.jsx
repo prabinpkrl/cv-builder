@@ -12,11 +12,25 @@ const styles = StyleSheet.create({
     lineHeight: 1.4,
   },
   header: {
+    padding: 40,
+    marginBottom: 0,
+  },
+  headerClassic: {
     backgroundColor: '#2c3e50',
     color: '#ffffff',
-    padding: 40,
     textAlign: 'center',
-    marginBottom: 0,
+  },
+  headerModern: {
+    backgroundColor: '#1e3a8a',
+    color: '#ffffff',
+    textAlign: 'left',
+  },
+  headerMinimal: {
+    backgroundColor: '#ffffff',
+    color: '#111827',
+    textAlign: 'left',
+    borderBottomWidth: 1,
+    borderBottomColor: '#e5e7eb',
   },
   headerName: {
     fontSize: 32,
@@ -61,13 +75,25 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#2c3e50',
-    borderBottomWidth: 1.5,
-    borderBottomColor: '#3498db',
     paddingBottom: 6,
     marginBottom: 18,
     letterSpacing: 1,
     textTransform: 'uppercase',
+  },
+  sectionTitleClassic: {
+    color: '#2c3e50',
+    borderBottomWidth: 1.5,
+    borderBottomColor: '#3498db',
+  },
+  sectionTitleModern: {
+    color: '#1e3a8a',
+    borderBottomWidth: 1.5,
+    borderBottomColor: '#2563eb',
+  },
+  sectionTitleMinimal: {
+    color: '#111827',
+    borderBottomWidth: 1,
+    borderBottomColor: '#e5e7eb',
   },
   entryContainer: {
     marginBottom: 16,
@@ -167,124 +193,145 @@ const CVPDFDocument = ({
   practicleData, 
   skillsData, 
   achievementsData, 
-  interestsData 
-}) => (
-  <Document>
-    <Page size="A4" style={styles.page}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerName}>
-          {formData.name || "Your Name"}
-        </Text>
-        <Text style={styles.headerRole}>
-          {formData.role || "Your Professional Role"}
-        </Text>
-        <View style={styles.headerContact}>
-          <View style={styles.contactItem}>
-            <Text style={styles.contactLabel}>EMAIL</Text>
-            <Text>{formData.email || "your.email@example.com"}</Text>
-          </View>
-          <View style={styles.contactItem}>
-            <Text style={styles.contactLabel}>PHONE</Text>
-            <Text>{formData.phone || "Your Phone Number"}</Text>
+  interestsData,
+  selectedTemplate 
+}) => {
+  const template = selectedTemplate || 'classic';
+
+  const headerStyle = [
+    styles.header,
+    template === 'classic'
+      ? styles.headerClassic
+      : template === 'modern'
+      ? styles.headerModern
+      : styles.headerMinimal,
+  ];
+
+  const sectionTitleStyles =
+    template === 'classic'
+      ? [styles.sectionTitle, styles.sectionTitleClassic]
+      : template === 'modern'
+      ? [styles.sectionTitle, styles.sectionTitleModern]
+      : [styles.sectionTitle, styles.sectionTitleMinimal];
+
+  return (
+    <Document>
+      <Page size="A4" style={styles.page}>
+        {/* Header */}
+        <View style={headerStyle}>
+          <Text style={styles.headerName}>
+            {formData.name || "Your Name"}
+          </Text>
+          <Text style={styles.headerRole}>
+            {formData.role || "Your Professional Role"}
+          </Text>
+          <View style={styles.headerContact}>
+            <View style={styles.contactItem}>
+              <Text style={styles.contactLabel}>EMAIL</Text>
+              <Text>{formData.email || "your.email@example.com"}</Text>
+            </View>
+            <View style={styles.contactItem}>
+              <Text style={styles.contactLabel}>PHONE</Text>
+              <Text>{formData.phone || "Your Phone Number"}</Text>
+            </View>
           </View>
         </View>
-      </View>
 
-      {/* Content - Single Column Layout */}
-      <View style={styles.content}>
-        {/* Education */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>EDUCATION</Text>
-          {educationData.map((entry, index) => (
-            <View key={index} style={styles.entryContainer}>
-              <View style={styles.entryHeader}>
-                <Text style={styles.entryTitle}>
-                  {entry.school || "School Name"}
-                </Text>
-                <Text style={styles.entryDate}>
-                  {entry.date || "Date"}
+        {/* Content - Single Column Layout */}
+        <View style={styles.content}>
+          {/* Education */}
+          <View style={styles.section}>
+            <Text style={sectionTitleStyles}>EDUCATION</Text>
+            {educationData.map((entry, index) => (
+              <View key={index} style={styles.entryContainer}>
+                <View style={styles.entryHeader}>
+                  <Text style={styles.entryTitle}>
+                    {entry.school || "School Name"}
+                  </Text>
+                  <Text style={styles.entryDate}>
+                    {entry.date || "Date"}
+                  </Text>
+                </View>
+                <Text style={styles.entrySubtitle}>
+                  {entry.title || "Degree/Title"}
                 </Text>
               </View>
-              <Text style={styles.entrySubtitle}>
-                {entry.title || "Degree/Title"}
-              </Text>
-            </View>
-          ))}
-        </View>
-
-        {/* Experience */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>EXPERIENCE</Text>
-          {practicleData.map((entry, index) => (
-            <View key={index} style={styles.experienceContainer}>
-              <View style={styles.entryHeader}>
-                <Text style={styles.entryTitle}>
-                  {entry.companyName || "Company Name"}
-                </Text>
-                <Text style={styles.entryDate}>
-                  {entry.dateFrom || "Start Date"} - {entry.dateUntil || "End Date"}
-                </Text>
-              </View>
-              <Text style={styles.entrySubtitle}>
-                {entry.positionTitle || "Position Title"}
-              </Text>
-              <Text style={styles.entryDescription}>
-                {entry.mainResponsibilities || "Your main responsibilities and achievements..."}
-              </Text>
-            </View>
-          ))}
-        </View>
-
-        {/* Skills */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>SKILLS</Text>
-          <View style={styles.skillsContainer}>
-            {skillsData.map((entry, index) => (
-              <Text key={index} style={styles.skillItem}>
-                {entry.skillName || "Skill Name"}
-              </Text>
             ))}
           </View>
-        </View>
 
-        {/* Achievements */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>ACHIEVEMENTS</Text>
-          {achievementsData.map((entry, index) => (
-            <View key={index} style={styles.achievementContainer}>
-              <View style={styles.entryHeader}>
-                <Text style={styles.entryTitle}>
-                  {entry.title || "Achievement Title"}
+          {/* Experience */}
+          <View style={styles.section}>
+            <Text style={sectionTitleStyles}>EXPERIENCE</Text>
+            {practicleData.map((entry, index) => (
+              <View key={index} style={styles.experienceContainer}>
+                <View style={styles.entryHeader}>
+                  <Text style={styles.entryTitle}>
+                    {entry.companyName || "Company Name"}
+                  </Text>
+                  <Text style={styles.entryDate}>
+                    {entry.dateFrom || "Start Date"} - {entry.dateUntil || "End Date"}
+                  </Text>
+                </View>
+                <Text style={styles.entrySubtitle}>
+                  {entry.positionTitle || "Position Title"}
                 </Text>
-                <Text style={styles.entryDate}>
-                  {entry.date || "Date"}
+                <Text style={styles.entryDescription}>
+                  {entry.mainResponsibilities || "Your main responsibilities and achievements..."}
                 </Text>
               </View>
-              <Text style={styles.entryDescription}>
-                {entry.description || "Achievement description..."}
-              </Text>
-            </View>
-          ))}
-        </View>
-
-        {/* Interests */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>INTERESTS</Text>
-          <View style={styles.skillsContainer}>
-            {interestsData.map((entry, index) => (
-              <Text key={index} style={styles.interestItem}>
-                {entry.interest || "Interest"}
-                {entry.category && entry.category !== "Personal" && 
-                  ` (${entry.category})`
-                }
-              </Text>
             ))}
           </View>
+
+          {/* Skills */}
+          <View style={styles.section}>
+            <Text style={sectionTitleStyles}>SKILLS</Text>
+            <View style={styles.skillsContainer}>
+              {skillsData.map((entry, index) => (
+                <Text key={index} style={styles.skillItem}>
+                  {entry.skillName || "Skill Name"}
+                </Text>
+              ))}
+            </View>
+          </View>
+
+          {/* Achievements */}
+          <View style={styles.section}>
+            <Text style={sectionTitleStyles}>ACHIEVEMENTS</Text>
+            {achievementsData.map((entry, index) => (
+              <View key={index} style={styles.achievementContainer}>
+                <View style={styles.entryHeader}>
+                  <Text style={styles.entryTitle}>
+                    {entry.title || "Achievement Title"}
+                  </Text>
+                  <Text style={styles.entryDate}>
+                    {entry.date || "Date"}
+                  </Text>
+                </View>
+                <Text style={styles.entryDescription}>
+                  {entry.description || "Achievement description..."}
+                </Text>
+              </View>
+            ))}
+          </View>
+
+          {/* Interests */}
+          <View style={styles.section}>
+            <Text style={sectionTitleStyles}>INTERESTS</Text>
+            <View style={styles.skillsContainer}>
+              {interestsData.map((entry, index) => (
+                <Text key={index} style={styles.interestItem}>
+                  {entry.interest || "Interest"}
+                  {entry.category && entry.category !== "Personal" && 
+                    ` (${entry.category})`
+                  }
+                </Text>
+              ))}
+            </View>
+          </View>
         </View>
-      </View>
-    </Page>
-  </Document>
-);
+      </Page>
+    </Document>
+  );
+};
 
 export default CVPDFDocument;
