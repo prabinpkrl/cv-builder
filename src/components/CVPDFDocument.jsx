@@ -1,5 +1,5 @@
 import React from 'react';
-import { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet, Font, Image } from '@react-pdf/renderer';
 
 // Create professional CV styles for the PDF
 const styles = StyleSheet.create({
@@ -185,6 +185,66 @@ const styles = StyleSheet.create({
     marginRight: 6,
     fontWeight: 400,
   },
+  // Modern template specific
+  contentRow: {
+    flexDirection: 'row',
+  },
+  sidebar: {
+    width: '35%',
+    paddingRight: 20,
+    borderRightWidth: 1,
+    borderRightColor: '#e5e7eb',
+  },
+  mainColumn: {
+    width: '65%',
+    paddingLeft: 20,
+  },
+  sidebarSectionTitle: {
+    fontSize: 11,
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+    color: '#1e3a8a',
+    marginBottom: 8,
+  },
+  sidebarSkillChip: {
+    fontSize: 10,
+    color: '#1e3a8a',
+    backgroundColor: '#eff6ff',
+    paddingVertical: 3,
+    paddingHorizontal: 8,
+    borderRadius: 12,
+    marginRight: 4,
+    marginBottom: 4,
+  },
+  sidebarInterestRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  sidebarInterestBullet: {
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: '#2563eb',
+    marginRight: 4,
+  },
+  sidebarInterestText: {
+    fontSize: 10,
+    color: '#1e3a8a',
+  },
+  profileImageWrapper: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    overflow: 'hidden',
+    borderWidth: 2,
+    borderColor: '#bfdbfe',
+    marginRight: 12,
+  },
+  profileImage: {
+    width: '100%',
+    height: '100%',
+  },
 });
 
 const CVPDFDocument = ({ 
@@ -219,115 +279,239 @@ const CVPDFDocument = ({
       <Page size="A4" style={styles.page}>
         {/* Header */}
         <View style={headerStyle}>
-          <Text style={styles.headerName}>
-            {formData.name || "Your Name"}
-          </Text>
-          <Text style={styles.headerRole}>
-            {formData.role || "Your Professional Role"}
-          </Text>
-          <View style={styles.headerContact}>
-            <View style={styles.contactItem}>
-              <Text style={styles.contactLabel}>EMAIL</Text>
-              <Text>{formData.email || "your.email@example.com"}</Text>
+          {template === 'modern' ? (
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                {formData.profileImage && (
+                  <View style={styles.profileImageWrapper}>
+                    <Image style={styles.profileImage} src={formData.profileImage} />
+                  </View>
+                )}
+                <View>
+                  <Text style={styles.headerName}>
+                    {formData.name || "Your Name"}
+                  </Text>
+                  <Text style={styles.headerRole}>
+                    {formData.role || "Your Professional Role"}
+                  </Text>
+                </View>
+              </View>
+              <View style={styles.headerContact}>
+                <View style={styles.contactItem}>
+                  <Text style={styles.contactLabel}>EMAIL</Text>
+                  <Text>{formData.email || "your.email@example.com"}</Text>
+                </View>
+                <View style={styles.contactItem}>
+                  <Text style={styles.contactLabel}>PHONE</Text>
+                  <Text>{formData.phone || "Your Phone Number"}</Text>
+                </View>
+              </View>
             </View>
-            <View style={styles.contactItem}>
-              <Text style={styles.contactLabel}>PHONE</Text>
-              <Text>{formData.phone || "Your Phone Number"}</Text>
+          ) : (
+            <View>
+              <Text style={styles.headerName}>
+                {formData.name || "Your Name"}
+              </Text>
+              <Text style={styles.headerRole}>
+                {formData.role || "Your Professional Role"}
+              </Text>
+              <View style={styles.headerContact}>
+                <View style={styles.contactItem}>
+                  <Text style={styles.contactLabel}>EMAIL</Text>
+                  <Text>{formData.email || "your.email@example.com"}</Text>
+                </View>
+                <View style={styles.contactItem}>
+                  <Text style={styles.contactLabel}>PHONE</Text>
+                  <Text>{formData.phone || "Your Phone Number"}</Text>
+                </View>
+              </View>
             </View>
-          </View>
+          )}
         </View>
 
-        {/* Content - Single Column Layout */}
+        {/* Content - Template-specific layout */}
         <View style={styles.content}>
-          {/* Education */}
-          <View style={styles.section}>
-            <Text style={sectionTitleStyles}>EDUCATION</Text>
-            {educationData.map((entry, index) => (
-              <View key={index} style={styles.entryContainer}>
-                <View style={styles.entryHeader}>
-                  <Text style={styles.entryTitle}>
-                    {entry.school || "School Name"}
-                  </Text>
-                  <Text style={styles.entryDate}>
-                    {entry.date || "Date"}
-                  </Text>
+          {template === 'modern' ? (
+            <View style={styles.contentRow}>
+              <View style={styles.sidebar}>
+                <Text style={styles.sidebarSectionTitle}>SKILLS SNAPSHOT</Text>
+                <View style={styles.skillsContainer}>
+                  {skillsData.map((entry, index) => (
+                    <Text key={index} style={styles.sidebarSkillChip}>
+                      {entry.skillName || "Skill"}
+                    </Text>
+                  ))}
                 </View>
-                <Text style={styles.entrySubtitle}>
-                  {entry.title || "Degree/Title"}
-                </Text>
-              </View>
-            ))}
-          </View>
 
-          {/* Experience */}
-          <View style={styles.section}>
-            <Text style={sectionTitleStyles}>EXPERIENCE</Text>
-            {practicleData.map((entry, index) => (
-              <View key={index} style={styles.experienceContainer}>
-                <View style={styles.entryHeader}>
-                  <Text style={styles.entryTitle}>
-                    {entry.companyName || "Company Name"}
-                  </Text>
-                  <Text style={styles.entryDate}>
-                    {entry.dateFrom || "Start Date"} - {entry.dateUntil || "End Date"}
-                  </Text>
+                <View style={{ marginTop: 16 }}>
+                  <Text style={styles.sidebarSectionTitle}>INTERESTS</Text>
+                  {interestsData.map((entry, index) => (
+                    <View key={index} style={styles.sidebarInterestRow}>
+                      <View style={styles.sidebarInterestBullet} />
+                      <Text style={styles.sidebarInterestText}>
+                        {entry.interest || "Interest"}
+                        {entry.category && entry.category !== "Personal" && ` (${entry.category})`}
+                      </Text>
+                    </View>
+                  ))}
                 </View>
-                <Text style={styles.entrySubtitle}>
-                  {entry.positionTitle || "Position Title"}
-                </Text>
-                <Text style={styles.entryDescription}>
-                  {entry.mainResponsibilities || "Your main responsibilities and achievements..."}
-                </Text>
               </View>
-            ))}
-          </View>
 
-          {/* Skills */}
-          <View style={styles.section}>
-            <Text style={sectionTitleStyles}>SKILLS</Text>
-            <View style={styles.skillsContainer}>
-              {skillsData.map((entry, index) => (
-                <Text key={index} style={styles.skillItem}>
-                  {entry.skillName || "Skill Name"}
-                </Text>
-              ))}
+              <View style={styles.mainColumn}>
+                <View style={styles.section}>
+                  <Text style={sectionTitleStyles}>EDUCATION</Text>
+                  {educationData.map((entry, index) => (
+                    <View key={index} style={styles.entryContainer}>
+                      <View style={styles.entryHeader}>
+                        <Text style={styles.entryTitle}>
+                          {entry.school || "School Name"}
+                        </Text>
+                        <Text style={styles.entryDate}>
+                          {entry.date || "Date"}
+                        </Text>
+                      </View>
+                      <Text style={styles.entrySubtitle}>
+                        {entry.title || "Degree/Title"}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+
+                <View style={styles.section}>
+                  <Text style={sectionTitleStyles}>EXPERIENCE</Text>
+                  {practicleData.map((entry, index) => (
+                    <View key={index} style={styles.experienceContainer}>
+                      <View style={styles.entryHeader}>
+                        <Text style={styles.entryTitle}>
+                          {entry.companyName || "Company Name"}
+                        </Text>
+                        <Text style={styles.entryDate}>
+                          {entry.dateFrom || "Start Date"} - {entry.dateUntil || "End Date"}
+                        </Text>
+                      </View>
+                      <Text style={styles.entrySubtitle}>
+                        {entry.positionTitle || "Position Title"}
+                      </Text>
+                      <Text style={styles.entryDescription}>
+                        {entry.mainResponsibilities || "Your main responsibilities and achievements..."}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+
+                <View style={styles.section}>
+                  <Text style={sectionTitleStyles}>ACHIEVEMENTS</Text>
+                  {achievementsData.map((entry, index) => (
+                    <View key={index} style={styles.achievementContainer}>
+                      <View style={styles.entryHeader}>
+                        <Text style={styles.entryTitle}>
+                          {entry.title || "Achievement Title"}
+                        </Text>
+                        <Text style={styles.entryDate}>
+                          {entry.date || "Date"}
+                        </Text>
+                      </View>
+                      <Text style={styles.entryDescription}>
+                        {entry.description || "Achievement description..."}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+              </View>
             </View>
-          </View>
-
-          {/* Achievements */}
-          <View style={styles.section}>
-            <Text style={sectionTitleStyles}>ACHIEVEMENTS</Text>
-            {achievementsData.map((entry, index) => (
-              <View key={index} style={styles.achievementContainer}>
-                <View style={styles.entryHeader}>
-                  <Text style={styles.entryTitle}>
-                    {entry.title || "Achievement Title"}
-                  </Text>
-                  <Text style={styles.entryDate}>
-                    {entry.date || "Date"}
-                  </Text>
-                </View>
-                <Text style={styles.entryDescription}>
-                  {entry.description || "Achievement description..."}
-                </Text>
+          ) : (
+            <View>
+              {/* Education */}
+              <View style={styles.section}>
+                <Text style={sectionTitleStyles}>EDUCATION</Text>
+                {educationData.map((entry, index) => (
+                  <View key={index} style={styles.entryContainer}>
+                    <View style={styles.entryHeader}>
+                      <Text style={styles.entryTitle}>
+                        {entry.school || "School Name"}
+                      </Text>
+                      <Text style={styles.entryDate}>
+                        {entry.date || "Date"}
+                      </Text>
+                    </View>
+                    <Text style={styles.entrySubtitle}>
+                      {entry.title || "Degree/Title"}
+                    </Text>
+                  </View>
+                ))}
               </View>
-            ))}
-          </View>
 
-          {/* Interests */}
-          <View style={styles.section}>
-            <Text style={sectionTitleStyles}>INTERESTS</Text>
-            <View style={styles.skillsContainer}>
-              {interestsData.map((entry, index) => (
-                <Text key={index} style={styles.interestItem}>
-                  {entry.interest || "Interest"}
-                  {entry.category && entry.category !== "Personal" && 
-                    ` (${entry.category})`
-                  }
-                </Text>
-              ))}
+              {/* Experience */}
+              <View style={styles.section}>
+                <Text style={sectionTitleStyles}>EXPERIENCE</Text>
+                {practicleData.map((entry, index) => (
+                  <View key={index} style={styles.experienceContainer}>
+                    <View style={styles.entryHeader}>
+                      <Text style={styles.entryTitle}>
+                        {entry.companyName || "Company Name"}
+                      </Text>
+                      <Text style={styles.entryDate}>
+                        {entry.dateFrom || "Start Date"} - {entry.dateUntil || "End Date"}
+                      </Text>
+                    </View>
+                    <Text style={styles.entrySubtitle}>
+                      {entry.positionTitle || "Position Title"}
+                    </Text>
+                    <Text style={styles.entryDescription}>
+                      {entry.mainResponsibilities || "Your main responsibilities and achievements..."}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+
+              {/* Skills */}
+              <View style={styles.section}>
+                <Text style={sectionTitleStyles}>SKILLS</Text>
+                <View style={styles.skillsContainer}>
+                  {skillsData.map((entry, index) => (
+                    <Text key={index} style={styles.skillItem}>
+                      {entry.skillName || "Skill Name"}
+                    </Text>
+                  ))}
+                </View>
+              </View>
+
+              {/* Achievements */}
+              <View style={styles.section}>
+                <Text style={sectionTitleStyles}>ACHIEVEMENTS</Text>
+                {achievementsData.map((entry, index) => (
+                  <View key={index} style={styles.achievementContainer}>
+                    <View style={styles.entryHeader}>
+                      <Text style={styles.entryTitle}>
+                        {entry.title || "Achievement Title"}
+                      </Text>
+                      <Text style={styles.entryDate}>
+                        {entry.date || "Date"}
+                      </Text>
+                    </View>
+                    <Text style={styles.entryDescription}>
+                      {entry.description || "Achievement description..."}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+
+              {/* Interests */}
+              <View style={styles.section}>
+                <Text style={sectionTitleStyles}>INTERESTS</Text>
+                <View style={styles.skillsContainer}>
+                  {interestsData.map((entry, index) => (
+                    <Text key={index} style={styles.interestItem}>
+                      {entry.interest || "Interest"}
+                      {entry.category && entry.category !== "Personal" && 
+                        ` (${entry.category})`
+                      }
+                    </Text>
+                  ))}
+                </View>
+              </View>
             </View>
-          </View>
+          )}
         </View>
       </Page>
     </Document>

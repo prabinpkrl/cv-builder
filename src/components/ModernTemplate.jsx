@@ -10,13 +10,24 @@ const ModernTemplate = ({
     <div className="h-full flex flex-col">
       <header className="bg-blue-900 text-white p-4 sm:p-6 md:p-8">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-wide">
-              {formData.name || "Your Name"}
-            </h1>
-            <p className="text-base sm:text-lg md:text-xl mt-2 text-blue-100 font-light">
-              {formData.role || "Your Professional Role"}
-            </p>
+          <div className="flex items-center gap-4">
+            {formData.profileImage && (
+              <div className="hidden sm:block w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-blue-300 shadow-md">
+                <img
+                  src={formData.profileImage}
+                  alt="Profile"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            )}
+            <div>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-wide">
+                {formData.name || "Your Name"}
+              </h1>
+              <p className="text-base sm:text-lg md:text-xl mt-2 text-blue-100 font-light">
+                {formData.role || "Your Professional Role"}
+              </p>
+            </div>
           </div>
           <div className="text-sm sm:text-base space-y-1">
             <div className="flex items-center">

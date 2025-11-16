@@ -53,6 +53,20 @@ const GeneralInfo = ({ formData, setFormData }) => {
         validateField(name, value);
     };
 
+    const handleImageChange = (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) {
+            setFormData({ ...formData, profileImage: "" });
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setFormData((prev) => ({ ...prev, profileImage: reader.result }));
+        };
+        reader.readAsDataURL(file);
+    };
+
     return (
         <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden mb-6">
             <div className="bg-blue-50 p-6 border-b border-gray-100">
@@ -131,6 +145,17 @@ const GeneralInfo = ({ formData, setFormData }) => {
                             }`}
                         />
                         {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
+                    </div>
+                    <div className="group">
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">
+                            Profile Photo (optional)
+                        </label>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                            className="w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                        />
                     </div>
                 </form>
             </div>
